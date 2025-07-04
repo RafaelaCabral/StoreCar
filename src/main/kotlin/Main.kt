@@ -1,10 +1,10 @@
 package org.example
 
 import org.example.model.Carro
-import org.example.service.CarroService
+import org.example.service.impl.CarroServiceImpl
 
 fun main() {
-    val service = CarroService()
+    val service = CarroServiceImpl()
 
     val carroTeste = Carro(
         marca = "Toyota",
@@ -15,10 +15,10 @@ fun main() {
         transmissao = "Automática",
         valor = 98000.0,
         cor = "Branco",
-        chassis = "skaeoeo"
+        chassis = "oooo132"
     )
 
-    service.cadastrarCarro(carroTeste)
+//    service.cadastrarCarro(carroTeste)
 
     println("\nListando carros cadastrados:")
     val lista = service.listarCarros()
@@ -28,4 +28,21 @@ fun main() {
     } else {
         lista.forEach { println(it) }
     }
+//    val id = 1
+//    service.deletarCarro(id)
+//
+//    val carroAtualizado = Carro(
+//        marca = "Honda",
+//        modelo = "Civic Touring",
+//        anoFabricacao = 2021,
+//        anoModelo = 2022,
+//        km = 15000,
+//        transmissao = "Automática",
+//        valor = 123000.0,
+//        cor = "Cinza",
+//        chassis = "CHS999ZZ"
+//    )
+//
+//    val idParaAtualizar = 4
+//    service.atualizarCarro(idParaAtualizar, carroAtualizado)
 }

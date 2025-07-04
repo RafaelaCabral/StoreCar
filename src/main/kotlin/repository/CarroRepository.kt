@@ -14,7 +14,7 @@ class CarroRepository {
         """.trimIndent()
 
         ConexaoDB.getConnection().use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
+            conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS).use { stmt ->
                 stmt.setString(1, carro.marca)
                 stmt.setString(2, carro.modelo)
                 stmt.setInt(3, carro.anoFabricacao)
@@ -25,6 +25,13 @@ class CarroRepository {
                 stmt.setString(8, carro.cor)
                 stmt.setString(9, carro.chassis)
                 stmt.executeUpdate()
+
+                val pegaId = stmt.generatedKeys
+                if (pegaId.next()) {
+                    val id = pegaId.getInt(1)
+                    println("ID gerado: $id")
+
+                }
             }
 
             println("Carro inserido com sucesso.")
@@ -59,4 +66,51 @@ class CarroRepository {
 
         return lista
     }
+
+    fun deletarCarro(id: Int) {
+        val sql = "DELETE FROM carro WHERE id = ?"
+
+        ConexaoDB.getConnection().use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setInt(1, id)
+                val carroApagado = stmt.executeUpdate()
+
+                if (carroApagado > 0) {
+                    println("Carro com o ID $id deletado com sucesso!")
+                } else {
+                    println("⚠Nenhum carro com ID $id encontrado.")
+                }
+            }
+        }
+    }
+
+    fun atualizarCarro(id: Int, carro: Carro): Boolean {
+        val sql = """
+        UPDATE carro SET 
+            marca = ?, modelo = ?, ano_fabricacao = ?, ano_modelo = ?, 
+            km = ?, transmissao = ?, valor = ?, cor = ?, chassis = ?
+        WHERE id = ?
+    """.trimIndent()
+
+        ConexaoDB.getConnection().use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, carro.marca)
+                stmt.setString(2, carro.modelo)
+                stmt.setInt(3, carro.anoFabricacao)
+                stmt.setInt(4, carro.anoModelo)
+                stmt.setInt(5, carro.km)
+                stmt.setString(6, carro.transmissao)
+                stmt.setDouble(7, carro.valor)
+                stmt.setString(8, carro.cor)
+                stmt.setString(9, carro.chassis)
+                stmt.setInt(10, id)
+
+                val linhasAfetadas = stmt.executeUpdate()
+                return linhasAfetadas > 0
+            }
+        }
+    }
+
+
+
 }
